@@ -21,7 +21,7 @@ class RecipeDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = .black
         setupButton()
     }
 
@@ -53,9 +53,11 @@ class RecipeDetailsViewController: UIViewController {
     @objc func performAction(sender: UIButton!) {
        // coordinator?.goToRecipesViewController()
         print("performAction")
-    }
+        let controller = DefaultAlertViewController(mainTitle: "title", message: "message", alertType: .failure)
+        controller.addAction(DefaultAlertViewController.Action(title: "actionTitle") {})
+        controller.modalPresentationStyle = .overFullScreen
+        controller.modalTransitionStyle = .crossDissolve
+       present(controller, animated: true)
 
-// coordinator vs router ??
-//sd_webImage
-    // king/fisher
+    }
 }

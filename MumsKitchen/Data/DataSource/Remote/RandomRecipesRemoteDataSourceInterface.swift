@@ -13,4 +13,6 @@ import Combine
 
 protocol RandomRecipesRemoteDataSourceInterface {
     func  fetchRandomRecipes() -> AnyPublisher<RecipeData, Error>
+  //  func fetchRecipeDetails(id: Int, includeNutrition: Bool) -> AnyPublisher<RecipeDetails, Error>
+
 }

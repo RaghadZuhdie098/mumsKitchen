@@ -12,7 +12,6 @@ import Foundation
 import Combine
 
 protocol RecipeRepoInterface {
-
     func fetchRandomRecipes() -> AnyPublisher<RecipeData,Error>
     func fetchRecipeDetails(id: Int, includeNutrition: Bool, completion: CompletionHandler<RecipeDetails>)
     func fetchSimilarRecipe(id: Int, completion: CompletionHandler<SimilarRecipes>)

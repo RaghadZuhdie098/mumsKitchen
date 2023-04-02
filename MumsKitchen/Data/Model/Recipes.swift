@@ -10,12 +10,12 @@
 import Foundation
 
 // MARK: - RecipeData
-struct RecipeData: Decodable {
+struct RecipeData: Codable {
     let recipes: [Recipe]
 }
 
 // MARK: - Recipe
-struct Recipe: Decodable {
+struct Recipe: Codable {
     let vegetarian, vegan, glutenFree, dairyFree: Bool?
     let veryHealthy, cheap, veryPopular, sustainable: Bool?
     let lowFodmap: Bool?
@@ -41,13 +41,13 @@ struct Recipe: Decodable {
 }
 
 // MARK: - AnalyzedInstruction
-struct AnalyzedInstruction: Decodable {
+struct AnalyzedInstruction: Codable {
     let name: String?
     let steps: [Step]?
 }
 
 // MARK: - Step
-struct Step: Decodable {
+struct Step: Codable {
     let number: Int?
     let step: String?
     let ingredients, equipment: [Ent]?
@@ -55,19 +55,19 @@ struct Step: Decodable {
 }
 
 // MARK: - Ent
-struct Ent: Decodable {
+struct Ent: Codable {
     let id: Int?
     let name, localizedName, image: String?
 }
 
 // MARK: - Length
-struct Length: Decodable {
+struct Length: Codable {
     let number: Int?
     let unit: String?
 }
 
 // MARK: - ExtendedIngredient
-struct ExtendedIngredient: Decodable {
+struct ExtendedIngredient: Codable {
     let id: Int?
     let aisle, image, consistency, name: String?
     let nameClean, original, originalName: String?
@@ -78,12 +78,12 @@ struct ExtendedIngredient: Decodable {
 }
 
 // MARK: - Measures
-struct Measures: Decodable {
+struct Measures: Codable {
     let us, metric: Metric?
 }
 
 // MARK: - Metric
-struct Metric: Decodable {
+struct Metric: Codable {
     let amount: Double?
     let unitShort, unitLong: String?
 }

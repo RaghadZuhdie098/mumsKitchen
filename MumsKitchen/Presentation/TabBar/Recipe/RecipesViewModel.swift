@@ -10,6 +10,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 class RecipesViewModel {
 
@@ -23,6 +24,7 @@ class RecipesViewModel {
         case loading
         case defaultt
     }
+    
     private var subscribers = Set<AnyCancellable> ()
 
     let getRandomRecipesUseCase: GetRandomRecipeUseCase
@@ -31,9 +33,18 @@ class RecipesViewModel {
         self.getRandomRecipesUseCase = getRandomRecipesUseCase
     }
 
+
     func getRandomRecipes() {
         isLoading = true
-        getRandomRecipesUseCase.execute().receive(on: DispatchQueue.main)
+        getRandomRecipesUseCase.execute().receive(on: DispatchQueue.main).mapError({ error -> Error in
+                if let error = error as? URLPathError {
+                    return error
+                    } else {
+                        print(error.localizedDescription)
+
+                    return error
+                }
+            })
             .sink { finish in
                 self.isLoading = false
                 switch finish {
@@ -46,7 +57,9 @@ class RecipesViewModel {
                 //Use sink(receiveCompletion:receiveValue:) to observe values received by the publisher and process them using a closure you specify.
                 print(finish)
             } receiveValue: {  [unowned self]  recipes in
-                self.recipes = recipes.recipes
+                var a = recipes.recipes.filter{$0.title != nil}.filter{$0.image != nil}
+                self.recipes = a
+
             }.store(in: &subscribers)
     }
     

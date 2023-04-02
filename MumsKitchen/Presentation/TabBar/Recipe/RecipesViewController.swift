@@ -12,30 +12,19 @@ import UIKit
 import Combine
 
 
-enum Section {
-    case main
-}
-
-extension Notification.Name {
-    static let newEvent = Notification.Name("new_event")
-}
-
 protocol RecipesNavigation: AnyObject {
     func navigateToNextPage()
 }
 
 class RecipesViewController: UIViewController  {
-
-    //typealias DataSource = UICollectionViewDiffableDataSource<Section, RecipePresentation>
-    //typealias Snapshot = NSDiffableDataSourceSnapshot<Section, RecipePresentation>
-   // private var recipes: [Recipe] = []
-    private var subscribers = Set<AnyCancellable>()
-    private var viewModel: RecipesViewModel
     public var delegate: RecipesNavigation?
-//    public var
+    private var viewModel: RecipesViewModel
+    private var subscribers = Set<AnyCancellable>()
+    var activityIndicator = UIActivityIndicatorView(style: .large)
 
-    private lazy var recipesCollectionView: UICollectionView = {
+    private var recipesCollectionView: UICollectionView = {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        let customLayout = RecipesCollectionLayout()
         //layout.minimumInteritemSpacing = 0 // between cell in the same row
         //layout.minimumLineSpacing = 40 // between rows
         //layout.sectionInset = UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50) // thw whole collection view
@@ -47,7 +36,7 @@ class RecipesViewController: UIViewController  {
         //
         //layout.itemSize = CGSize(width: 300, height: 300) // cell width and height
         layout.scrollDirection = .vertical
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: customLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(RecipesCollectionViewCell.self, forCellWithReuseIdentifier: RecipesCollectionViewCell.identifier)
         collectionView.backgroundColor = UIColor.white
@@ -57,15 +46,20 @@ class RecipesViewController: UIViewController  {
     init(viewModel: RecipesViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        //. This initializes the view controller without a nib file or bundle, which means that the view controller's view will be created programmatically or loaded from a storyboard.
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    var activityIndicator = UIActivityIndicatorView(style: .large)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let layout = recipesCollectionView.collectionViewLayout as? RecipesCollectionLayout {
+            layout.delegate = self
+        }
+
         title = "Recipes"
         view.backgroundColor = .white
         recipesCollectionView.backgroundColor = .white
@@ -82,6 +76,7 @@ class RecipesViewController: UIViewController  {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -89,7 +84,7 @@ class RecipesViewController: UIViewController  {
         //
     }
     
-    func addSubViews() {
+    private func addSubViews() {
         recipesCollectionView.delegate = self
         self.view.addSubview(recipesCollectionView)
 
@@ -108,18 +103,18 @@ class RecipesViewController: UIViewController  {
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
 
-    func bindToRecipesDataSource() {
-        viewModel.$recipes.receive(on: RunLoop.main).sink { [unowned self] recipes in
-          print(recipes, "<-- Recipes")
-          print(viewModel.recipes, "<-- viewModel.Recipes")
-            self.recipesCollectionView.delegate = self
-            self.recipesCollectionView.dataSource = self
-            self.recipesCollectionView.reloadData()
+    private func bindToRecipesDataSource() {
+        viewModel.$recipes.receive(on: RunLoop.main).sink { [weak self] recipes in
+         // print(recipes, "<-- Recipes")
+         // print(viewModel.recipes, "<-- viewModel.Recipes")
+            self?.recipesCollectionView.delegate = self
+            self?.recipesCollectionView.dataSource = self
+            self?.recipesCollectionView.reloadData()
         }.store(in: &subscribers)
 
     }
 
-    func observeLoading() {
+    private func observeLoading() {
         //viewModel.$isLoading: Published<Bool>.Publisher
         viewModel.$isLoading.receive(on: RunLoop.main).sink { isloading in
             switch isloading {
@@ -151,23 +146,26 @@ extension RecipesViewController: UICollectionViewDelegateFlowLayout {
 //// In this example, sectionInsets is an instance of UIEdgeInsets that specifies the top, left, bottom, and right padding for the section.
     ///
 
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-//            if indexPath.row == 2 {
-//                return CGSize(width: view.frame.width/2 - 20, height: 500)
-            return CGSize(width: view.frame.width/2 - 30, height: 200)
-        }
+
+
+//        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//
+////            if indexPath.row == 2 {
+////                return CGSize(width: view.frame.width/2 - 20, height: 500)
+//            return CGSize(width: view.frame.width/2 - 30, height: 200)
+//        } // should be commeted
 
 
 //
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-            return 20
+//        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+//            return 20
             //scrollDirection: horizontal → this value represents the minimum spacing between successive columns.
             //scrollDirection: vertical → this value represents the minimum spacing between successive rows
             //layout.minimumInteritemSpacing = 0 // between cell in the same row    //layout.minimumLineSpacing = 40 // between rows
 
             // but since cell at index 0 has larger height and it follows the line spacing exactly 20 but other cells in this row has lower height in this line thus not follows 20 spacing their line spacing value is greater than 20.0 that’s why they name it as minimumLineSpacing (means minimum it follows this distance but this is not a guarantee). This is limitation of UICollectionViewFlowLayout
-        }
+   //     }
 
 //    width_of_the_screen = 376
 //    width_of_each_cell = 100
@@ -198,21 +196,51 @@ extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataS
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipesCollectionViewCell.identifier, for: indexPath) as! RecipesCollectionViewCell
-        myCell.recipe = self.viewModel.recipes[indexPath.row]
+       myCell.recipe = self.viewModel.recipes[indexPath.row]
+        //myCell.setupCell(self.viewModel.recipes[indexPath.row])
         return myCell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.delegate?.navigateToNextPage()
-        print("User tapped on item \(indexPath.row)")
+        print("User tapped on item \(indexPath.row), \(self.viewModel.recipes[indexPath.row])")
     }
 
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipesCollectionViewCell.identifier, for: indexPath) as! RecipesCollectionViewCell
-            // Animate the label in the cell
-            myCell.animateLabel()
-        }
+//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+//        let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipesCollectionViewCell.identifier, for: indexPath) as! RecipesCollectionViewCell
+//            // Animate the label in the cell
+//      //      myCell.animateLabel()
+//        }
 
 
 
+}
+
+extension RecipesViewController: RecipesCollectionLayoutDelegate {
+    func collectionView(_ collectionView: UICollectionView, heightForLabelAtIndexPath indexPath: IndexPath, columnWidth: CGFloat) -> CGFloat {
+        //viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth)
+        //print(viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth) ?? 80, "pppppp")
+        print(columnWidth, "<-- columnWidth", recipesCollectionView.collectionViewLayout.collectionViewContentSize.width)
+        return CGFloat(((viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth - 12 - 20) ?? 0) + CGFloat(220)) )
+    }
+
+
+
+
+}
+extension String {
+
+    func getHeight(font: UIFont, width: CGFloat) -> CGFloat {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font
+        ]
+        let attributedText = NSAttributedString(string: self, attributes: attributes)
+        let constraintBox = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let textHeight = attributedText.boundingRect(
+            with: constraintBox, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+            .height.rounded(.up)
+        print("textHeight --->", textHeight)
+
+        return textHeight
+    }
 }
