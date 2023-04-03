@@ -18,11 +18,8 @@ class RandomRecipesRequest: RequestParam {
     }
 
     override var parameters: [String : String] {
-        return [ "number" : number.ToStringValue,
-                 "apiKey" : Constants.apiKey ]
-    }
-
-    
+        return [ "number" : number.ToStringValue]
+    }    
 
 }
 

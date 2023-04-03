@@ -57,6 +57,8 @@ If an error occurs in the getFinalURL function, it will return a Fail publisher 
             }
         }
 
+        urlComponents.percentEncodedQueryItems?.append(URLQueryItem(name: "apiKey", value: KeychainManager.retrieveApiKey()))
+
         guard let url = urlComponents.url else {
             return Fail(error: URLPathError.canNotGetURLpath("canNotGetURLpath"))
                 .eraseToAnyPublisher()
