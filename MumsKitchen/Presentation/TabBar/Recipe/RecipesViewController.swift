@@ -17,6 +17,7 @@ protocol RecipesNavigation: AnyObject {
 }
 
 class RecipesViewController: UIViewController  {
+
     public var delegate: RecipesNavigation?
     private var viewModel: RecipesViewModel
     private var subscribers = Set<AnyCancellable>()
@@ -55,14 +56,7 @@ class RecipesViewController: UIViewController  {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if let layout = recipesCollectionView.collectionViewLayout as? RecipesCollectionLayout {
-            layout.delegate = self
-        }
-
-        title = "Recipes"
-        view.backgroundColor = .white
-        recipesCollectionView.backgroundColor = .white
+        setupViews()
         addSubViews()
         observeLoading()
         bindToRecipesDataSource()
@@ -76,14 +70,21 @@ class RecipesViewController: UIViewController  {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //
     }
-    
+
+    private func setupViews() {
+        if let layout = recipesCollectionView.collectionViewLayout as? RecipesCollectionLayout {
+            layout.delegate = self
+        }
+
+        title = "Recipes"
+        view.backgroundColor = .white
+    }
+
     private func addSubViews() {
         recipesCollectionView.delegate = self
         self.view.addSubview(recipesCollectionView)
@@ -105,8 +106,6 @@ class RecipesViewController: UIViewController  {
 
     private func bindToRecipesDataSource() {
         viewModel.$recipes.receive(on: RunLoop.main).sink { [weak self] recipes in
-         // print(recipes, "<-- Recipes")
-         // print(viewModel.recipes, "<-- viewModel.Recipes")
             self?.recipesCollectionView.delegate = self
             self?.recipesCollectionView.dataSource = self
             self?.recipesCollectionView.reloadData()
@@ -186,9 +185,9 @@ extension RecipesViewController: UICollectionViewDelegateFlowLayout {
 extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
 
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return 4
-//    }
+    //    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    //        return 4
+    //    }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.viewModel.recipes.count
@@ -196,7 +195,7 @@ extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataS
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipesCollectionViewCell.identifier, for: indexPath) as! RecipesCollectionViewCell
-       myCell.recipe = self.viewModel.recipes[indexPath.row]
+        myCell.recipe = self.viewModel.recipes[indexPath.row]
         //myCell.setupCell(self.viewModel.recipes[indexPath.row])
         return myCell
     }
@@ -206,41 +205,16 @@ extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataS
         print("User tapped on item \(indexPath.row), \(self.viewModel.recipes[indexPath.row])")
     }
 
-//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//        let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipesCollectionViewCell.identifier, for: indexPath) as! RecipesCollectionViewCell
-//            // Animate the label in the cell
-//      //      myCell.animateLabel()
-//        }
-
-
+    //    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    //        let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipesCollectionViewCell.identifier, for: indexPath) as! RecipesCollectionViewCell
+    //            // Animate the label in the cell
+    //      //      myCell.animateLabel()
+    //        }
 
 }
 
 extension RecipesViewController: RecipesCollectionLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForLabelAtIndexPath indexPath: IndexPath, columnWidth: CGFloat) -> CGFloat {
-        //viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth)
-        //print(viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth) ?? 80, "pppppp")
-        print(columnWidth, "<-- columnWidth", recipesCollectionView.collectionViewLayout.collectionViewContentSize.width)
-        return CGFloat(((viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth - 12 - 20) ?? 0) + CGFloat(220)) )
-    }
-
-
-
-
-}
-extension String {
-
-    func getHeight(font: UIFont, width: CGFloat) -> CGFloat {
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font
-        ]
-        let attributedText = NSAttributedString(string: self, attributes: attributes)
-        let constraintBox = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let textHeight = attributedText.boundingRect(
-            with: constraintBox, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
-            .height.rounded(.up)
-        print("textHeight --->", textHeight)
-
-        return textHeight
+        return CGFloat(((viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth - 12 - 20) ?? 0) + CGFloat(220)) ) // 12 paddding , 20 lear=ding trailing from left and right
     }
 }

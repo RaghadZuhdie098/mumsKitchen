@@ -20,7 +20,7 @@ class RandomRecipesRemoteDataSourceImp: RandomRecipesRemoteDataSourceInterface {
     }
 
     func fetchRandomRecipes() -> AnyPublisher<RecipeData, Error> {
-        let randomRecipesRequest = RandomRecipesRequest(number: 18)
+        let randomRecipesRequest = RandomRecipesRequest(number: 100)
         return apiManager.getData(endPoint: Constants.endpoint.randomRecipes.url, parameters: randomRecipesRequest).eraseToAnyPublisher()
     }
 }

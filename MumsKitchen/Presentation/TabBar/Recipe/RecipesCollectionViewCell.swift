@@ -225,29 +225,26 @@ class RecipesCollectionViewCell: UICollectionViewCell {
     }
     
     func showImage(url:String) {
-        let url = URL(string: url)
-        imageView.kf.setImage(with: url)
-        //Group-2
         
-        //        if let imageData = ImageDownloader.images.object(forKey: url as NSString) {
-        //            print("Using cache Image")
-        //            self.imageView.image = UIImage(data: imageData as Data )
-        //            return
-        //        }
-        //
-        //            ImageDownloader.loadImage(from: url)
-        //                .receive(on: RunLoop.main)
-        //                .sink { image in
-        //                    self.imageView.image = image
-        //                    if let image = image, let imageData = image.pngData() {
-        //                        ImageDownloader.images.setObject(imageData as NSData, forKey: url as NSString)
-        //                        print("cache Image")
-        //
-        //                    }
-        //                }.store(in: &cancellable)
-        //
-        //        }
-    }
+                if let imageData = ImageDownloader.images.object(forKey: url as NSString) {
+                    print("Using cache Image")
+                    self.imageView.image = UIImage(data: imageData as Data )
+                    return
+                }
+
+                    ImageDownloader.loadImage(from: url)
+                        .receive(on: RunLoop.main)
+                        .sink { image in
+                            self.imageView.image = image
+                            if let image = image, let imageData = image.pngData() {
+                                ImageDownloader.images.setObject(imageData as NSData, forKey: url as NSString)
+                                print("cache Image")
+
+                            }
+                        }.store(in: &cancellable)
+
+                }
+    
 }
 
 

@@ -7,9 +7,9 @@
 // Copyright © MAF Digital Lab - Jordan. All rights reserved. 
 //
 
+// implemented by this resource : https://www.kodeco.com/4829472-uicollectionview-custom-layout-tutorial-pinterest
 
 import UIKit
-
 
 protocol RecipesCollectionLayoutDelegate: AnyObject {
     func collectionView(
@@ -17,9 +17,7 @@ protocol RecipesCollectionLayoutDelegate: AnyObject {
         heightForLabelAtIndexPath indexPath: IndexPath, columnWidth: CGFloat) -> CGFloat
 }
 
-
 class RecipesCollectionLayout: UICollectionViewLayout {
-
 
     // 1
     weak var delegate: RecipesCollectionLayoutDelegate?
@@ -49,14 +47,11 @@ class RecipesCollectionLayout: UICollectionViewLayout {
 
     override func prepare() {
         // 1
-        guard
-            cache.isEmpty,
-                let collectionView = collectionView
-        else {
-            return
-        }
+        guard let collectionView = collectionView else { return }
+
+        cache = []
         // 2
-        let columnWidth = contentWidth / CGFloat(numberOfColumns)
+        let columnWidth = contentWidth / CGFloat(numberOfColumns) // 194
         var xOffset: [CGFloat] = []
         for column in 0..<numberOfColumns {
             xOffset.append(CGFloat(column) * columnWidth)
@@ -106,10 +101,10 @@ class RecipesCollectionLayout: UICollectionViewLayout {
         return visibleLayoutAttributes
     }
 
-    override func layoutAttributesForItem(at indexPath: IndexPath)
-    -> UICollectionViewLayoutAttributes? {
-        return cache[indexPath.item]
-    }
+//    override func layoutAttributesForItem(at indexPath: IndexPath)
+//    -> UICollectionViewLayoutAttributes? {
+//        return cache[indexPath.item]
+//    }
 
 
 }
