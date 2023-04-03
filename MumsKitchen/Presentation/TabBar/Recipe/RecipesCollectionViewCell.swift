@@ -21,10 +21,9 @@ class RecipesCollectionViewCell: UICollectionViewCell {
             guard let recipe = recipe else {
                 return
             }
-            //    addSubviews()
+            setupCell()
             showImage(url: recipe.image ?? "")
             titleLabel.text = recipe.title ?? ""
-            //setupCell()
         }
     }
     
@@ -42,8 +41,6 @@ class RecipesCollectionViewCell: UICollectionViewCell {
         let imageView  = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
-        imageView.image = UIImage(named: "Group-2")
-        
         return imageView
     }()
     
@@ -57,6 +54,7 @@ class RecipesCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .center
         return label
     }()
+
     let veganLabel: UILabel = {
         var label = UILabel()
         label.backgroundColor = .green.withAlphaComponent(0.7)
@@ -78,16 +76,26 @@ class RecipesCollectionViewCell: UICollectionViewCell {
         return stackView
     }()
     
-    let imagesStackView: UIStackView = {
+    let timeStackView: UIStackView = {
         var stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fill
-        stackView.alignment = .fill
+        stackView.alignment = .center
         stackView.spacing   = 5
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-    
+
+    let likesStackView: UIStackView = {
+        var stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        stackView.spacing   = 5
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
     var timelabel: UILabel = {
         var label = UILabel()
         label.font = .systemFont(ofSize: 13)
@@ -125,10 +133,6 @@ class RecipesCollectionViewCell: UICollectionViewCell {
         titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 10).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -10).isActive = true
         titleLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10).isActive = true
-        // titleLabel.heightAnchor.constraint(equalToConstant: recipe?.title?.getHeight(font: .boldSystemFont(ofSize: 15), width: 174) ?? 0)
-        // titleLabel.bottomAnchor.constraint(greaterThanOrEqualTo: self.contentView.bottomAnchor, constant: -10).isActive = true
-        //  titleLabel.topAnchor.constraint(equalTo: self.imageView.bottomAnchor, constant: 10).isActive = true
-        
     }
     
     fileprivate func addSubviews() {
@@ -140,47 +144,49 @@ class RecipesCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         layer.cornerRadius = 10.0
         layer.masksToBounds = true
-        layer.borderColor = UIColor.black.cgColor
-        layer.borderWidth = 1
+        backgroundColor = .yellow.withAlphaComponent(0.3)
         addSubviews()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        //        titleLabel.alpha = 0
-        //        imageView.image = nil
-        //        imageView.removeFromSuperview()
-        //        titleLabel.removeFromSuperview()
-        //        labelsStackView.removeFromSuperview()
-        //        vegetarianLabel.removeFromSuperview()
-        //        veganLabel.removeFromSuperview()
+        labelsStackView.removeFromSuperview()
+        vegetarianLabel.removeFromSuperview()
+        veganLabel.removeFromSuperview()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     fileprivate func addImageView() {
-        let view = UIView()
-        view.addSubview(imageView)
-        self.contentView.addSubview(view)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
-        view.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor).isActive = true
-        view.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor).isActive = true
-        view.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -10).isActive = true
-        view.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        
-        view.backgroundColor = .red.withAlphaComponent(0.5)
-        imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        imageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        
-        //  imageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        // imageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10).isActive = true
-        
-        imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        
+
+        let viewUnderImage = UIView()
+        viewUnderImage.addSubview(imageView)
+        self.contentView.addSubview(viewUnderImage)
+        viewUnderImage.backgroundColor = .blue.withAlphaComponent(0.4)
+        viewUnderImage.translatesAutoresizingMaskIntoConstraints = false
+        viewUnderImage.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        viewUnderImage.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
+        viewUnderImage.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor).isActive = true
+        viewUnderImage.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor).isActive = true
+        viewUnderImage.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -10).isActive = true
+
+        imageView.topAnchor.constraint(equalTo: viewUnderImage.topAnchor).isActive = true
+        imageView.leadingAnchor.constraint(equalTo: viewUnderImage.leadingAnchor).isActive = true
+        imageView.trailingAnchor.constraint(equalTo: viewUnderImage.trailingAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: viewUnderImage.bottomAnchor, constant: -2).isActive = true
+
+        let viewAboveImage = UIView()
+        self.contentView.addSubview(viewAboveImage)
+        viewAboveImage.translatesAutoresizingMaskIntoConstraints = false
+        viewAboveImage.backgroundColor = .white.withAlphaComponent(0.4)
+        viewAboveImage.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        viewAboveImage.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
+        viewAboveImage.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor).isActive = true
+        viewAboveImage.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor).isActive = true
+        viewAboveImage.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -10).isActive = true
+
     }
     
     fileprivate func addLabelsStack() {
@@ -198,52 +204,75 @@ class RecipesCollectionViewCell: UICollectionViewCell {
         labelsStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
         labelsStackView.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
     }
-    
-    //    func setupCell() {
-    //
-    //       // addImagesStackView()
-    //      //  addTitleLabel()
-    //     //   addLabelsStack()
-    //    }
+
+    func setupCell() {
+
+        addImagesStackView()
+        addLabelsStack()
+
+    }
     
     func addImagesStackView() {
+
         if let time = recipe?.cookingMinutes {
             timelabel.text = "\(time) min"
-            imagesStackView.addArrangedSubview(clockImageView)
-            imagesStackView.addArrangedSubview(timelabel)
+            timeStackView.addArrangedSubview(clockImageView)
+            timeStackView.addArrangedSubview(timelabel)
         }
         
         if let likes = recipe?.aggregateLikes {
             likesLabel.text = "\(likes)"
-            imagesStackView.addArrangedSubview(handImageView)
-            imagesStackView.addArrangedSubview(likesLabel)
+            likesStackView.addArrangedSubview(handImageView)
+            likesStackView.addArrangedSubview(likesLabel)
         }
-        
-        self.addSubview(imagesStackView)
-        imagesStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
-        imagesStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+
+        let view = UIView()
+        view.backgroundColor = .white.withAlphaComponent(0.6)
+        view.translatesAutoresizingMaskIntoConstraints = false
+
+        let centeredStack = UIStackView()
+        centeredStack.translatesAutoresizingMaskIntoConstraints = false
+        centeredStack.spacing   = 5
+        centeredStack.alignment = .center
+        centeredStack.axis = .horizontal
+        centeredStack.distribution = .equalCentering
+
+        centeredStack.addArrangedSubview(timeStackView)
+        centeredStack.addArrangedSubview(likesStackView)
+        view.addSubview(centeredStack)
+        self.contentView.addSubview(view)
+
+        view.heightAnchor.constraint(equalToConstant: 27).isActive = true
+        view.bottomAnchor.constraint(equalTo: self.imageView.bottomAnchor, constant: 0 ).isActive = true
+        view.leadingAnchor.constraint(equalTo:  self.contentView.leadingAnchor, constant: 0).isActive = true
+        view.trailingAnchor.constraint(equalTo:  self.contentView.trailingAnchor, constant: 0).isActive = true
+
+        centeredStack.translatesAutoresizingMaskIntoConstraints = false
+        centeredStack.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        centeredStack.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        centeredStack.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        centeredStack.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 10).isActive = true
+        centeredStack.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -10).isActive = true
     }
     
     func showImage(url:String) {
         
-                if let imageData = ImageDownloader.images.object(forKey: url as NSString) {
-                    print("Using cache Image")
-                    self.imageView.image = UIImage(data: imageData as Data )
-                    return
+        if let imageData = ImageDownloader.images.object(forKey: url as NSString) {
+            print("Using cache Image")
+            self.imageView.image = UIImage(data: imageData as Data )
+            return
+        }
+
+        ImageDownloader.loadImage(from: url)
+            .receive(on: RunLoop.main)
+            .sink { image in
+                self.imageView.image = image
+                if let image = image, let imageData = image.pngData() {
+                    ImageDownloader.images.setObject(imageData as NSData, forKey: url as NSString)
+                    print("cache Image")
                 }
-
-                    ImageDownloader.loadImage(from: url)
-                        .receive(on: RunLoop.main)
-                        .sink { image in
-                            self.imageView.image = image
-                            if let image = image, let imageData = image.pngData() {
-                                ImageDownloader.images.setObject(imageData as NSData, forKey: url as NSString)
-                                print("cache Image")
-
-                            }
-                        }.store(in: &cancellable)
-
-                }
+            }.store(in: &cancellable)
+    }
     
 }
 
