@@ -43,7 +43,7 @@ class MainTabBarCoordinator: Coordinator {
 
 
         let homeNavigationController = UINavigationController()
-        let navigationScrollEdgeAppearance = UINavigationBarAppearance()
+        var navigationScrollEdgeAppearance = UINavigationBarAppearance()
         navigationScrollEdgeAppearance.configureWithOpaqueBackground()
         navigationScrollEdgeAppearance.backgroundColor = .blue.withAlphaComponent(0.4)
         homeNavigationController.navigationBar.standardAppearance = navigationScrollEdgeAppearance

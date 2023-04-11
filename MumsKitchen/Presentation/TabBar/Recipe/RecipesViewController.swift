@@ -11,9 +11,8 @@
 import UIKit
 import Combine
 
-
 protocol RecipesNavigation: AnyObject {
-    func navigateToNextPage()
+    func navigateToRecipeDetails(recipe: Recipe)
 }
 
 class RecipesViewController: UIViewController  {
@@ -56,6 +55,7 @@ class RecipesViewController: UIViewController  {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.prefersLargeTitles = true
         setupViews()
         addSubViews()
         observeLoading()
@@ -63,17 +63,11 @@ class RecipesViewController: UIViewController  {
         viewModel.getRandomRecipes()
     }
 
+
+
     struct Event {
         let title: String
         let scheduledOn: Date
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
 
     private func setupViews() {
@@ -110,7 +104,6 @@ class RecipesViewController: UIViewController  {
             self?.recipesCollectionView.dataSource = self
             self?.recipesCollectionView.reloadData()
         }.store(in: &subscribers)
-
     }
 
     private func observeLoading() {
@@ -129,7 +122,6 @@ class RecipesViewController: UIViewController  {
 
 extension RecipesViewController: UICollectionViewDelegateFlowLayout {
 
-
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
 //        CGSize(width: recipesCollectionView.bounds.width, height: 0)
 //    }
@@ -145,16 +137,12 @@ extension RecipesViewController: UICollectionViewDelegateFlowLayout {
 //// In this example, sectionInsets is an instance of UIEdgeInsets that specifies the top, left, bottom, and right padding for the section.
     ///
 
-
-
-
 //        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 //
 ////            if indexPath.row == 2 {
 ////                return CGSize(width: view.frame.width/2 - 20, height: 500)
 //            return CGSize(width: view.frame.width/2 - 30, height: 200)
 //        } // should be commeted
-
 
 //
 //        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -184,7 +172,6 @@ extension RecipesViewController: UICollectionViewDelegateFlowLayout {
 
 extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
-
     //    func numberOfSections(in collectionView: UICollectionView) -> Int {
     //        return 4
     //    }
@@ -201,7 +188,7 @@ extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.delegate?.navigateToNextPage()
+        self.delegate?.navigateToRecipeDetails(recipe: self.viewModel.recipes[indexPath.row])
         print("User tapped on item \(indexPath.row), \(self.viewModel.recipes[indexPath.row])")
     }
 
@@ -210,11 +197,10 @@ extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataS
     //            // Animate the label in the cell
     //      //      myCell.animateLabel()
     //        }
-
 }
 
 extension RecipesViewController: RecipesCollectionLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForLabelAtIndexPath indexPath: IndexPath, columnWidth: CGFloat) -> CGFloat {
-        return CGFloat(((viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth - 12 - 20) ?? 0) + CGFloat(220)) ) // 12 paddding , 20 lear=ding trailing from left and right
+        return CGFloat(((viewModel.recipes[indexPath.item].title?.getHeight(font: .boldSystemFont(ofSize: 15), width: columnWidth - 12 - 20) ?? 0) + CGFloat(220))) // 12 paddding , 20 lear=ding trailing from left and right
     }
 }

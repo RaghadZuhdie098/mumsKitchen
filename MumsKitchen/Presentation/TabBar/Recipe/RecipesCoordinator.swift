@@ -34,14 +34,15 @@ class RecipesCoordinator: Coordinator {
 
 
 extension RecipesCoordinator: RecipesNavigation {
-
-    // Navigate to next page
-    func navigateToNextPage() {
+    func navigateToRecipeDetails(recipe: Recipe) {
         print("next page")
-        let recipeDetailsCoordinator = RecipeDetailsCoordinator(navigationController: navigationController)
+        let recipeDetailsCoordinator = RecipeDetailsCoordinator(navigationController: navigationController, recipe: recipe)
         recipeDetailsCoordinator.parentCoordinator = self
-       //recipeDetailsCoordinator.delegate = self
+        //recipeDetailsCoordinator.delegate = self
         childCoordinators.append(recipeDetailsCoordinator)
         recipeDetailsCoordinator.start()
+
     }
+
+
 }

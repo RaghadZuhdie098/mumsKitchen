@@ -18,13 +18,16 @@ public struct Constants {
 
     enum endpoint {
         case randomRecipes
-        case randomDetails(id: String)
+        case recipeDetails(id: String)
+        case ingrediantImage(imageName: String)
         var url: String {
                 switch self {
                 case .randomRecipes:
                     return "recipes/random"
-                case .randomDetails(let id): // Constants.endpoint.randomDetails(id: "212346").url
-                    return "https://api.spoonacular.com/recipes/\(id)/information"
+                case .recipeDetails(let id): // Constants.endpoint.randomDetails(id: "212346").url
+                    return "recipes/\(id)/information"
+                case .ingrediantImage(let image):
+                    return "cdn/ingredients_100x100/\(image)"
                 }
         }
     }

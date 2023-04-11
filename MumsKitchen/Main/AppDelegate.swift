@@ -16,7 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
 
         KeychainManager().saveApiKey()
-       
+        UIApplication.shared.statusBarStyle = .lightContent
+
         return true
     }
 

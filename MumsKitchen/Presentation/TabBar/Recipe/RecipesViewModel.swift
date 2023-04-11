@@ -10,7 +10,6 @@
 
 import Foundation
 import Combine
-import UIKit
 
 class RecipesViewModel {
 
@@ -57,8 +56,8 @@ class RecipesViewModel {
                 //Use sink(receiveCompletion:receiveValue:) to observe values received by the publisher and process them using a closure you specify.
                 print(finish)
             } receiveValue: {  [unowned self]  recipes in
-                var a = recipes.recipes.filter{$0.title != nil}.filter{$0.image != nil}
-                self.recipes = a
+                var filteredRecipes = recipes.recipes.filter{$0.title != nil}.filter{$0.image != nil}
+                self.recipes = filteredRecipes
 
             }.store(in: &subscribers)
     }

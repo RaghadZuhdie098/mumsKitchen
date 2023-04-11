@@ -19,12 +19,15 @@ class RecipeDetailsCoordinator: Coordinator {
 
     var navigationController: UINavigationController
 
-    init(navigationController: UINavigationController) {
+    var recipe: Recipe
+
+    init(navigationController: UINavigationController, recipe: Recipe) {
         self.navigationController = navigationController
+        self.recipe = recipe
     }
 
     func start() {
-        let recipeDetailsVC = RecipeDetailsViewController()// -> RecipeDetailsViewController()
+        let recipeDetailsVC = RecipeDetailsViewController(viewModel: RecipeDetailsViewModel(recipe: recipe))// -> RecipeDetailsViewController()
         recipeDetailsVC.delegate = self
         navigationController.pushViewController(recipeDetailsVC, animated: true)
     }
