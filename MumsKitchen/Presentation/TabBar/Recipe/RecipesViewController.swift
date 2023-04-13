@@ -183,7 +183,6 @@ extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipesCollectionViewCell.identifier, for: indexPath) as! RecipesCollectionViewCell
         myCell.recipe = self.viewModel.recipes[indexPath.row]
-        //myCell.setupCell(self.viewModel.recipes[indexPath.row])
         return myCell
     }
 
