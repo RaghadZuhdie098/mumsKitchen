@@ -9,9 +9,8 @@
 
 
 import Foundation
-enum URLPathError: LocalizedError {
 
+enum URLPathError: LocalizedError {
     case canNotGetURLComponents(String)
     case canNotGetURLpath(String)
-
 }

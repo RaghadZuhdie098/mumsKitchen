@@ -13,7 +13,7 @@ import Combine
 
 protocol RecipeRepoInterface {
     func fetchRandomRecipes() -> AnyPublisher<RecipeData,Error>
-    func fetchRecipeDetails(id: Int, includeNutrition: Bool, completion: CompletionHandler<RecipeDetails>)
+    func fetchRecipeInformation(id: Int) -> AnyPublisher<Recipe,Error>
     func fetchSimilarRecipe(id: Int, completion: CompletionHandler<SimilarRecipes>)
     func serchByIngrediant(ingrediant: String, completion: CompletionHandler<RecipesBySearch>)
     func getReciptByCategory(category: String)

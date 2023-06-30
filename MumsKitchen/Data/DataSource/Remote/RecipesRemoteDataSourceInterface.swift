@@ -11,8 +11,8 @@
 import Foundation
 import Combine
 
-protocol RandomRecipesRemoteDataSourceInterface {
+protocol RecipesRemoteDataSourceInterface {
     func  fetchRandomRecipes() -> AnyPublisher<RecipeData, Error>
-  //  func fetchRecipeDetails(id: Int, includeNutrition: Bool) -> AnyPublisher<RecipeDetails, Error>
+    func fetchRecipeDetails(id: Int) -> AnyPublisher<Recipe, Error>
 
 }

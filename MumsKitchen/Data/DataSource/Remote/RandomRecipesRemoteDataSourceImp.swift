@@ -11,7 +11,7 @@
 import Foundation
 import Combine
 
-class RandomRecipesRemoteDataSourceImp: RandomRecipesRemoteDataSourceInterface {
+class RandomRecipesRemoteDataSourceImp: RecipesRemoteDataSourceInterface {
 
     let apiManager: GenericAPIManagerProtocol
 
@@ -23,6 +23,12 @@ class RandomRecipesRemoteDataSourceImp: RandomRecipesRemoteDataSourceInterface {
         let randomRecipesRequest = RandomRecipesRequest(number: 100)
         return apiManager.getData(endPoint: Constants.endpoint.randomRecipes.url, parameters: randomRecipesRequest).eraseToAnyPublisher()
     }
+    
+    func fetchRecipeDetails(id: Int) -> AnyPublisher<Recipe, Error> {
+        let parameters = RequestParam()
+        return apiManager.getData(endPoint: Constants.endpoint.recipeDetails(id: "\(id)").url , parameters: parameters).eraseToAnyPublisher()
+    }
+    
 }
 
 

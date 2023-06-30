@@ -10,4 +10,6 @@
 
 import Foundation
 
-let getRandomRecipesUseCase = GetRandomRecipeUseCaseImp(repository: RecipesRepoImp(randomRecipesLocalDataSource: RandomRecipesLocalDataSourceImp(), randomRecipesRemoteDataSource: RandomRecipesRemoteDataSourceImp(apiManager: GenericAPIManager())))
+let getRandomRecipesUseCase = GetRandomRecipeUseCaseImp(repository: RecipesRepoImp(randomRecipesLocalDataSource: RandomRecipesLocalDataSourceImp(), recipesRemoteDataSource: RandomRecipesRemoteDataSourceImp(apiManager: GenericAPIManager())))
+
+let getRecipeInformationUseCase = GetRecipeInformationUseCaseImp(repository: RecipesRepoImp(randomRecipesLocalDataSource: RandomRecipesLocalDataSourceImp(), recipesRemoteDataSource: RandomRecipesRemoteDataSourceImp(apiManager: GenericAPIManager())))

@@ -25,6 +25,7 @@ If an error occurs in the getFinalURL function, it will return a Fail publisher 
         let decoder = JSONDecoder()
         return  getFinalURL(endPoint: endPoint, parameters: parameters).flatMap { syncResult -> AnyPublisher<T, Error> in
             // Use the result of the sync request to modify the async request
+            print(syncResult, "<----- URL ----->")
             return URLSession.shared.dataTaskPublisher(for: syncResult)
                 .tryMap() { element -> Data in
                     guard let httpResponse = element.response as? HTTPURLResponse,
@@ -55,6 +56,8 @@ If an error occurs in the getFinalURL function, it will return a Fail publisher 
             urlComponents.percentEncodedQueryItems = parameters.parameters.map { key, value in
                 URLQueryItem(name: key, value: value)
             }
+        } else {
+            urlComponents.percentEncodedQueryItems = [URLQueryItem(name: "apiKey", value: KeychainManager.retrieveApiKey())]
         }
 
         urlComponents.percentEncodedQueryItems?.append(URLQueryItem(name: "apiKey", value: KeychainManager.retrieveApiKey()))

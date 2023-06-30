@@ -27,7 +27,10 @@ class RecipeDetailsCoordinator: Coordinator {
     }
 
     func start() {
-        let recipeDetailsVC = RecipeDetailsViewController(viewModel: RecipeDetailsViewModel(recipe: recipe))// -> RecipeDetailsViewController()
+        guard let recipeId = recipe.id else {
+            return
+        }
+        let recipeDetailsVC = RecipeDetailsViewController(viewModel: RecipeDetailsViewModel(id: recipeId, getRecipeDetailsUseCase: getRecipeInformationUseCase))// -> RecipeDetailsViewController()
         recipeDetailsVC.delegate = self
         navigationController.pushViewController(recipeDetailsVC, animated: true)
     }

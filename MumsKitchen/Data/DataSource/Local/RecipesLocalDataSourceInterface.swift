@@ -11,6 +11,6 @@
 import Foundation
 import Combine
 
-protocol RandomRecipesLocalDataSourceInterface {
+protocol RecipesLocalDataSourceInterface {
    // func fetchRandomRecipes() -> AnyPublisher<RecipeData, Error>
 }

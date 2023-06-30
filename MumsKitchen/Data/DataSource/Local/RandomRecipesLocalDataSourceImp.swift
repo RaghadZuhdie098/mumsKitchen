@@ -11,7 +11,7 @@
 import Foundation
 import Combine
 
-class RandomRecipesLocalDataSourceImp: RandomRecipesLocalDataSourceInterface {
+class RandomRecipesLocalDataSourceImp: RecipesLocalDataSourceInterface {
 
     
     

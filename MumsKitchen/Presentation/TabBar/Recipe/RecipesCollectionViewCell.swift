@@ -257,21 +257,38 @@ class RecipesCollectionViewCell: UICollectionViewCell {
     
     func showImage(url:String) {
         
-        if let imageData = ImageDownloader.images.object(forKey: url as NSString) {
-            print("Using cache Image")
-            self.imageView.image = UIImage(data: imageData as Data )
-            return
-        }
+        
+        imageView.kf.setImage(with: URL(string: url)!)
+//        if let imageData = ImageDownloader.images.object(forKey: url as NSString) {
+//            print("Using cache Image")
+//            self.imageView.image = UIImage(data: imageData as Data )
+//            return
+//        }
 
-        ImageDownloader.loadImage(from: url)
-            .receive(on: RunLoop.main)
-            .sink { image in
-                self.imageView.image = image
-                if let image = image, let imageData = image.pngData() {
-                    ImageDownloader.images.setObject(imageData as NSData, forKey: url as NSString)
-                    print("cache Image")
-                }
-            }.store(in: &cancellable)
+//        ImageDownloader.loadImage(from: url)
+//            .receive(on: RunLoop.main)
+//            .sink(receiveCompletion: { completion in
+//                switch completion {
+//                case .failure(let error):
+//                    // Handle the error
+//                    print("Error loading image: \(error.localizedDescription)")
+//                case .finished:
+//                    // The publisher finished successfully
+//                    break
+//                }
+//            }, receiveValue: { image in
+//                self.imageView.image = image
+//                if let image = image, let imageData = image.pngData() {
+//                    ImageDownloader.images.setObject(imageData as NSData, forKey: url as NSString)
+//                    print("cache Image")
+//                }
+//            })
+//            .store(in: &cancellable)
+//
+
+
+
+
     }
     
 }

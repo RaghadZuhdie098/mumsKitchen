@@ -20,7 +20,7 @@ class RecipesViewController: UIViewController  {
     public var delegate: RecipesNavigation?
     private var viewModel: RecipesViewModel
     private var subscribers = Set<AnyCancellable>()
-    var activityIndicator = UIActivityIndicatorView(style: .large)
+    private var activityIndicator = UIActivityIndicatorView(style: .large)
 
     private var recipesCollectionView: UICollectionView = {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -79,23 +79,30 @@ class RecipesViewController: UIViewController  {
         view.backgroundColor = .white
     }
 
-    private func addSubViews() {
-        recipesCollectionView.delegate = self
-        self.view.addSubview(recipesCollectionView)
-
-        NSLayoutConstraint.activate([
-            recipesCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            recipesCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            recipesCollectionView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
-            recipesCollectionView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20)
-        ])
-
+    private func addLoadingView() {
         view.addSubview(activityIndicator)
         activityIndicator.startAnimating()
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.color = .black
         activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+    
+    private func addRecipeCollectionView() {
+        self.view.addSubview(recipesCollectionView)
+        NSLayoutConstraint.activate([
+            recipesCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            recipesCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            recipesCollectionView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
+            recipesCollectionView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20)
+        ])
+    }
+    
+    private func addSubViews() {
+        recipesCollectionView.delegate = self
+        addRecipeCollectionView()
+
+        addLoadingView()
     }
 
     private func bindToRecipesDataSource() {
@@ -172,10 +179,6 @@ extension RecipesViewController: UICollectionViewDelegateFlowLayout {
 
 extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
-    //    func numberOfSections(in collectionView: UICollectionView) -> Int {
-    //        return 4
-    //    }
-
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.viewModel.recipes.count
     }
@@ -191,11 +194,6 @@ extension RecipesViewController: UICollectionViewDelegate, UICollectionViewDataS
         print("User tapped on item \(indexPath.row), \(self.viewModel.recipes[indexPath.row])")
     }
 
-    //    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    //        let myCell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipesCollectionViewCell.identifier, for: indexPath) as! RecipesCollectionViewCell
-    //            // Animate the label in the cell
-    //      //      myCell.animateLabel()
-    //        }
 }
 
 extension RecipesViewController: RecipesCollectionLayoutDelegate {
